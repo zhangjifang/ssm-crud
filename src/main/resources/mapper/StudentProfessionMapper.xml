@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.crud.dao.StudentProfessionMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.crud.bean.StudentProfession">
+    <id column="studentID" jdbcType="CHAR" property="studentid" />
+    <result column="professionID" jdbcType="CHAR" property="professionid" />
+  </resultMap>
+  
+  <resultMap  id="WithProfessionResultMap" type="com.atguigu.crud.bean.StudentProfession">
+  	<id column="studentID" jdbcType="CHAR" property="studentid" />
+     <id column="studentID" jdbcType="CHAR" property="studentid" />
+    <result column="professionID" jdbcType="CHAR" property="professionid" />
+    <!-- 指定联合查询出的部门字段的封装 -->
+    <association property="professioninfo" javaType="com.atguigu.crud.bean.professioninfo">
+    	<result column="professionname" property="professionname"/>
+    	<result column="professionperson" property="professionperson"/>
+    	<result column="professiondes" property="professiondes"/>
+    	<result column="professionintrodue" property="professionintrodue"/>
+    	<result column="year" property="year"/>
+    	<result column="number" property="number"/>
+    </association>
+  </resultMap>
+  
+  
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    studentID, professionID
+  </sql>
+  
+  <sql id="WithProfession_Column_List">
+    e.studentID, e.professionID,d.professionname,d.professionperson,d.professiondes,d.professionintrodue,d.year,d.number
+  </sql>
+  
+  <!-- 查询学生同时带班级信息 -->
+  <select id="selectByExampleWithProfession" resultMap="WithProfessionResultMap">
+	   select
+	    <if test="distinct">
+	      distinct
+	    </if>
+	    <include refid="WithProfession_Column_List" />
+		FROM StudentProfession e
+		left join ProfessionInfo d on e.`professionID`=d.`professionID`
+	    <if test="_parameter != null">
+	      <include refid="Example_Where_Clause" />
+	    </if>
+	    <if test="orderByClause != null">
+	      order by ${orderByClause}
+	    </if>
+  </select>
+  
+  <select id="selectByExample" parameterType="com.atguigu.crud.bean.StudentProfessionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from studentprofession
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from studentprofession
+    where studentID = #{studentid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from studentprofession
+    where studentID = #{studentid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.atguigu.crud.bean.StudentProfessionExample">
+    delete from studentprofession
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.atguigu.crud.bean.StudentProfession">
+    insert into studentprofession (studentID, professionID)
+    values (#{studentid,jdbcType=CHAR}, #{professionid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.atguigu.crud.bean.StudentProfession">
+    insert into studentprofession
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        studentID,
+      </if>
+      <if test="professionid != null">
+        professionID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        #{studentid,jdbcType=CHAR},
+      </if>
+      <if test="professionid != null">
+        #{professionid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.atguigu.crud.bean.StudentProfessionExample" resultType="java.lang.Long">
+    select count(*) from studentprofession
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update studentprofession
+    <set>
+      <if test="record.studentid != null">
+        studentID = #{record.studentid,jdbcType=CHAR},
+      </if>
+      <if test="record.professionid != null">
+        professionID = #{record.professionid,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update studentprofession
+    set studentID = #{record.studentid,jdbcType=CHAR},
+      professionID = #{record.professionid,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.atguigu.crud.bean.StudentProfession">
+    update studentprofession
+    <set>
+      <if test="professionid != null">
+        professionID = #{professionid,jdbcType=CHAR},
+      </if>
+    </set>
+    where studentID = #{studentid,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.crud.bean.StudentProfession">
+    update studentprofession
+    set professionID = #{professionid,jdbcType=CHAR}
+    where studentID = #{studentid,jdbcType=CHAR}
+  </update>
+ 
+</mapper>

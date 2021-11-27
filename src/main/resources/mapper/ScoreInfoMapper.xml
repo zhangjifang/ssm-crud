@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.crud.dao.ScoreInfoMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.crud.bean.ScoreInfo">
+    <id column="studentID" jdbcType="CHAR" property="studentid" />
+    <id column="courseName" jdbcType="VARCHAR" property="coursename" />
+    <result column="credit" jdbcType="REAL" property="credit" />
+    <result column="Score" jdbcType="REAL" property="score" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    studentID, courseName, credit, Score
+  </sql>
+  <select id="selectByExample" parameterType="com.atguigu.crud.bean.ScoreInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from scoreinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.atguigu.crud.bean.ScoreInfoKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scoreinfo
+    where studentID = #{studentid,jdbcType=CHAR}
+      and courseName = #{coursename,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.atguigu.crud.bean.ScoreInfoKey">
+    delete from scoreinfo
+    where studentID = #{studentid,jdbcType=CHAR}
+      and courseName = #{coursename,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.atguigu.crud.bean.ScoreInfoExample">
+    delete from scoreinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.atguigu.crud.bean.ScoreInfo">
+    insert into scoreinfo (studentID, courseName, credit, 
+      Score)
+    values (#{studentid,jdbcType=CHAR}, #{coursename,jdbcType=VARCHAR}, #{credit,jdbcType=REAL}, 
+      #{score,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.atguigu.crud.bean.ScoreInfo">
+    insert into scoreinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        studentID,
+      </if>
+      <if test="coursename != null">
+        courseName,
+      </if>
+      <if test="credit != null">
+        credit,
+      </if>
+      <if test="score != null">
+        Score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        #{studentid,jdbcType=CHAR},
+      </if>
+      <if test="coursename != null">
+        #{coursename,jdbcType=VARCHAR},
+      </if>
+      <if test="credit != null">
+        #{credit,jdbcType=REAL},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.atguigu.crud.bean.ScoreInfoExample" resultType="java.lang.Long">
+    select count(*) from scoreinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update scoreinfo
+    <set>
+      <if test="record.studentid != null">
+        studentID = #{record.studentid,jdbcType=CHAR},
+      </if>
+      <if test="record.coursename != null">
+        courseName = #{record.coursename,jdbcType=VARCHAR},
+      </if>
+      <if test="record.credit != null">
+        credit = #{record.credit,jdbcType=REAL},
+      </if>
+      <if test="record.score != null">
+        Score = #{record.score,jdbcType=REAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update scoreinfo
+    set studentID = #{record.studentid,jdbcType=CHAR},
+      courseName = #{record.coursename,jdbcType=VARCHAR},
+      credit = #{record.credit,jdbcType=REAL},
+      Score = #{record.score,jdbcType=REAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.atguigu.crud.bean.ScoreInfo">
+    update scoreinfo
+    <set>
+      <if test="credit != null">
+        credit = #{credit,jdbcType=REAL},
+      </if>
+      <if test="score != null">
+        Score = #{score,jdbcType=REAL},
+      </if>
+    </set>
+    where studentID = #{studentid,jdbcType=CHAR}
+      and courseName = #{coursename,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.crud.bean.ScoreInfo">
+    update scoreinfo
+    set credit = #{credit,jdbcType=REAL},
+      Score = #{score,jdbcType=REAL}
+    where studentID = #{studentid,jdbcType=CHAR}
+      and courseName = #{coursename,jdbcType=VARCHAR}
+  </update>
+</mapper>

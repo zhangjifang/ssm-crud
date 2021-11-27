@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.crud.dao.StudentWishMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.crud.bean.StudentWish">
+    <id column="studentID" jdbcType="CHAR" property="studentid" />
+    <result column="professionID1" jdbcType="CHAR" property="professionid1" />
+    <result column="professionID2" jdbcType="CHAR" property="professionid2" />
+    <result column="professionID3" jdbcType="CHAR" property="professionid3" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    studentID, professionID1, professionID2, professionID3
+  </sql>
+  <select id="selectByExample" parameterType="com.atguigu.crud.bean.StudentWishExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from studentwish
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from studentwish
+    where studentID = #{studentid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from studentwish
+    where studentID = #{studentid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.atguigu.crud.bean.StudentWishExample">
+    delete from studentwish
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.atguigu.crud.bean.StudentWish">
+    insert into studentwish (studentID, professionID1, professionID2, 
+      professionID3)
+    values (#{studentid,jdbcType=CHAR}, #{professionid1,jdbcType=CHAR}, #{professionid2,jdbcType=CHAR}, 
+      #{professionid3,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.atguigu.crud.bean.StudentWish">
+    insert into studentwish
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        studentID,
+      </if>
+      <if test="professionid1 != null">
+        professionID1,
+      </if>
+      <if test="professionid2 != null">
+        professionID2,
+      </if>
+      <if test="professionid3 != null">
+        professionID3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentid != null">
+        #{studentid,jdbcType=CHAR},
+      </if>
+      <if test="professionid1 != null">
+        #{professionid1,jdbcType=CHAR},
+      </if>
+      <if test="professionid2 != null">
+        #{professionid2,jdbcType=CHAR},
+      </if>
+      <if test="professionid3 != null">
+        #{professionid3,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.atguigu.crud.bean.StudentWishExample" resultType="java.lang.Long">
+    select count(*) from studentwish
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update studentwish
+    <set>
+      <if test="record.studentid != null">
+        studentID = #{record.studentid,jdbcType=CHAR},
+      </if>
+      <if test="record.professionid1 != null">
+        professionID1 = #{record.professionid1,jdbcType=CHAR},
+      </if>
+      <if test="record.professionid2 != null">
+        professionID2 = #{record.professionid2,jdbcType=CHAR},
+      </if>
+      <if test="record.professionid3 != null">
+        professionID3 = #{record.professionid3,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update studentwish
+    set studentID = #{record.studentid,jdbcType=CHAR},
+      professionID1 = #{record.professionid1,jdbcType=CHAR},
+      professionID2 = #{record.professionid2,jdbcType=CHAR},
+      professionID3 = #{record.professionid3,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.atguigu.crud.bean.StudentWish">
+    update studentwish
+    <set>
+      <if test="professionid1 != null">
+        professionID1 = #{professionid1,jdbcType=CHAR},
+      </if>
+      <if test="professionid2 != null">
+        professionID2 = #{professionid2,jdbcType=CHAR},
+      </if>
+      <if test="professionid3 != null">
+        professionID3 = #{professionid3,jdbcType=CHAR},
+      </if>
+    </set>
+    where studentID = #{studentid,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.crud.bean.StudentWish">
+    update studentwish
+    set professionID1 = #{professionid1,jdbcType=CHAR},
+      professionID2 = #{professionid2,jdbcType=CHAR},
+      professionID3 = #{professionid3,jdbcType=CHAR}
+    where studentID = #{studentid,jdbcType=CHAR}
+  </update>
+</mapper>

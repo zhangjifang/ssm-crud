@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.crud.dao.BorrowInfoMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.crud.bean.BorrowInfo">
+    <id column="BorrowID" jdbcType="CHAR" property="borrowid" />
+    <result column="StudentID" jdbcType="CHAR" property="studentid" />
+    <result column="BookID" jdbcType="CHAR" property="bookid" />
+    <result column="Time" jdbcType="CHAR" property="time" />
+    <result column="ReturnTime" jdbcType="CHAR" property="returntime" />
+    <result column="Deadline" jdbcType="CHAR" property="deadline" />
+    <result column="IfoverTime" jdbcType="CHAR" property="ifovertime" />
+  </resultMap>
+  
+  
+  <resultMap  id="WithSendResultMap" type="com.atguigu.crud.bean.BorrowInfo">
+    <id column="BorrowID" jdbcType="CHAR" property="borrowid" />
+  	<id column="StudentID" jdbcType="CHAR" property="studentid" />
+    <result column="BookID" jdbcType="CHAR" property="bookid" />
+    <result column="Time" jdbcType="CHAR" property="time" />
+    <result column="ReturnTime" jdbcType="CHAR" property="returntime" />
+    <result column="Deadline" jdbcType="CHAR" property="deadline" />
+    <result column="IfoverTime" jdbcType="CHAR" property="ifovertime" />
+    <!-- 指定联合查询出的部门字段的封装 -->
+    <association property="Partner" javaType="com.atguigu.crud.bean.Partner">
+    	<result column="studentname" property="studentname"/>
+    </association>
+    <association property="BookInfo" javaType="com.atguigu.crud.bean.BookInfo">
+    	<result column="bookname" property="bookname"/>
+    </association>
+  </resultMap>
+  
+  
+  
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    BorrowID, StudentID, BookID, Time, ReturnTime, Deadline, IfoverTime
+  </sql>
+  
+  
+  <sql id="WithStudent_Column_List">
+    e.BorrowID,e.StudentID,d.studentname,e.BookID,f.bookname, e.Time, e.ReturnTime, e.Deadline, e.IfoverTime
+  </sql>
+  
+  
+   <!-- 查询学生同时带班级信息 -->
+  <select id="selectByExampleWithStudent" resultMap="WithSendResultMap">
+	   select
+	    <if test="distinct">
+	      distinct
+	    </if>
+	    <include refid="WithStudent_Column_List" />
+		FROM tab_borrowinfo e
+		left join tab_student d on e.`StudentID`=d.`StudentID`
+		left join tab_bookinfo f on e.`BookID`=f.`BookID`
+	    <if test="_parameter != null">
+	      <include refid="Example_Where_Clause" />
+	    </if>
+	    <if test="orderByClause != null">
+	      order by ${orderByClause}
+	    </if>
+  </select>
+  
+  
+  
+  
+  <select id="selectByExample" parameterType="com.atguigu.crud.bean.BorrowInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tab_borrowinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tab_borrowinfo
+    where BorrowID = #{borrowid,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tab_borrowinfo
+    where BorrowID = #{borrowid,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.atguigu.crud.bean.BorrowInfoExample">
+    delete from tab_borrowinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.atguigu.crud.bean.BorrowInfo">
+    insert into tab_borrowinfo (BorrowID, StudentID, BookID, 
+      Time, ReturnTime, Deadline, 
+      IfoverTime)
+    values (#{borrowid,jdbcType=CHAR}, #{studentid,jdbcType=CHAR}, #{bookid,jdbcType=CHAR}, 
+      #{time,jdbcType=CHAR}, #{returntime,jdbcType=CHAR}, #{deadline,jdbcType=CHAR}, 
+      #{ifovertime,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.atguigu.crud.bean.BorrowInfo">
+    insert into tab_borrowinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="borrowid != null">
+        BorrowID,
+      </if>
+      <if test="studentid != null">
+        StudentID,
+      </if>
+      <if test="bookid != null">
+        BookID,
+      </if>
+      <if test="time != null">
+        Time,
+      </if>
+      <if test="returntime != null">
+        ReturnTime,
+      </if>
+      <if test="deadline != null">
+        Deadline,
+      </if>
+      <if test="ifovertime != null">
+        IfoverTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="borrowid != null">
+        #{borrowid,jdbcType=CHAR},
+      </if>
+      <if test="studentid != null">
+        #{studentid,jdbcType=CHAR},
+      </if>
+      <if test="bookid != null">
+        #{bookid,jdbcType=CHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=CHAR},
+      </if>
+      <if test="returntime != null">
+        #{returntime,jdbcType=CHAR},
+      </if>
+      <if test="deadline != null">
+        #{deadline,jdbcType=CHAR},
+      </if>
+      <if test="ifovertime != null">
+        #{ifovertime,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.atguigu.crud.bean.BorrowInfoExample" resultType="java.lang.Long">
+    select count(*) from tab_borrowinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update tab_borrowinfo
+    <set>
+      <if test="record.borrowid != null">
+        BorrowID = #{record.borrowid,jdbcType=CHAR},
+      </if>
+      <if test="record.studentid != null">
+        StudentID = #{record.studentid,jdbcType=CHAR},
+      </if>
+      <if test="record.bookid != null">
+        BookID = #{record.bookid,jdbcType=CHAR},
+      </if>
+      <if test="record.time != null">
+        Time = #{record.time,jdbcType=CHAR},
+      </if>
+      <if test="record.returntime != null">
+        ReturnTime = #{record.returntime,jdbcType=CHAR},
+      </if>
+      <if test="record.deadline != null">
+        Deadline = #{record.deadline,jdbcType=CHAR},
+      </if>
+      <if test="record.ifovertime != null">
+        IfoverTime = #{record.ifovertime,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update tab_borrowinfo
+    set BorrowID = #{record.borrowid,jdbcType=CHAR},
+      StudentID = #{record.studentid,jdbcType=CHAR},
+      BookID = #{record.bookid,jdbcType=CHAR},
+      Time = #{record.time,jdbcType=CHAR},
+      ReturnTime = #{record.returntime,jdbcType=CHAR},
+      Deadline = #{record.deadline,jdbcType=CHAR},
+      IfoverTime = #{record.ifovertime,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.atguigu.crud.bean.BorrowInfo">
+    update tab_borrowinfo
+    <set>
+      <if test="studentid != null">
+        StudentID = #{studentid,jdbcType=CHAR},
+      </if>
+      <if test="bookid != null">
+        BookID = #{bookid,jdbcType=CHAR},
+      </if>
+      <if test="time != null">
+        Time = #{time,jdbcType=CHAR},
+      </if>
+      <if test="returntime != null">
+        ReturnTime = #{returntime,jdbcType=CHAR},
+      </if>
+      <if test="deadline != null">
+        Deadline = #{deadline,jdbcType=CHAR},
+      </if>
+      <if test="ifovertime != null">
+        IfoverTime = #{ifovertime,jdbcType=CHAR},
+      </if>
+    </set>
+    where BorrowID = #{borrowid,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.atguigu.crud.bean.BorrowInfo">
+    update tab_borrowinfo
+    set StudentID = #{studentid,jdbcType=CHAR},
+      BookID = #{bookid,jdbcType=CHAR},
+      Time = #{time,jdbcType=CHAR},
+      ReturnTime = #{returntime,jdbcType=CHAR},
+      Deadline = #{deadline,jdbcType=CHAR},
+      IfoverTime = #{ifovertime,jdbcType=CHAR}
+    where BorrowID = #{borrowid,jdbcType=CHAR}
+  </update>
+</mapper>
